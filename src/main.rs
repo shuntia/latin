@@ -4,17 +4,17 @@
 #![deny(clippy::style)]
 
 use std::fmt;
+use std::io::{self, Write};
 use std::time::Duration;
 
 use anyhow::Result;
 use clap::*;
 use indicatif::ProgressBar;
 use reqwest::Client;
-use serde::Deserializer;
 use serde::de::Error;
+use serde::Deserializer;
 use serde::{Deserialize, Serialize};
 use serde_json::{self, Value};
-use tokio::io::{AsyncReadExt, stdin};
 
 /// This program fetches definitions of latin words from [https://latin-is-simple.com].
 ///
@@ -31,7 +31,7 @@ pub struct Arguments {
     forms_only: bool,
     #[arg(value_parser=non_empty)]
     query: Option<String>,
-    #[arg(default_value = "whitakers")]
+    #[arg(default_value_t = LookupType::Whitakers)]
     source: LookupType,
 }
 
@@ -39,6 +39,15 @@ pub struct Arguments {
 pub enum LookupType {
     LIS,
     Whitakers,
+}
+
+impl fmt::Display for LookupType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            LookupType::LIS => f.write_str("lis"),
+            LookupType::Whitakers => f.write_str("whitakers"),
+        }
+    }
 }
 
 fn non_empty(input: &str) -> Result<String, String> {
@@ -68,17 +77,7 @@ async fn main() {
         prog.finish_and_clear();
         result
     } else if args.interactive {
-        let mut valid = None;
-        let mut stdin = stdin();
-        while valid.is_none() {
-            print!("word: ");
-            let mut input = String::new();
-            let _ = stdin.read_to_string(&mut input).await;
-            if !input.is_empty() {
-                valid = Some(input);
-            }
-        }
-        valid.unwrap()
+        read_query_from_stdin()
     } else {
         panic!(
             "You did not specify a word, and you did not specify interactive mode(-i).\nAborting."
@@ -104,6 +103,25 @@ async fn main() {
             for i in res {
                 println!("{}", i);
             }
+        }
+    }
+}
+
+fn read_query_from_stdin() -> String {
+    loop {
+        print!("word: ");
+        let _ = io::stdout().flush();
+
+        let mut input = String::new();
+        match io::stdin().read_line(&mut input) {
+            Ok(0) => continue,
+            Ok(_) => {
+                let trimmed = input.trim();
+                if !trimmed.is_empty() {
+                    return trimmed.to_string();
+                }
+            }
+            Err(_) => continue,
         }
     }
 }
