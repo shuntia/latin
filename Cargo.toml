@@ -1,5 +1,5 @@
 [package]
-name = "latin"
+name = "latin-cli"
 version = "1.0.0"
 edition = "2024"
 authors = ["shuntia <shuntia@shuntia.net>"]
@@ -18,4 +18,4 @@ indicatif = { version = "0.18.0", features = ["tokio"] }
 reqwest = "0.12.23"
 serde = { version = "1.0.226", features = ["derive"] }
 serde_json = "1.0.145"
-tokio = { version = "1.47.1", features = ["full"] }
+tokio = { version = "1.47.1", meatures = ["full"] }
