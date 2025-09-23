@@ -2,6 +2,14 @@
 name = "latin"
 version = "1.0.0"
 edition = "2024"
+authors = ["shuntia <shuntia@shuntia.net>"]
+description="A command line latin dictionary."
+readme="README.md"
+homepage="https://github.com/shuntia/latin"
+repository="https://github.com/shuntia/latin"
+license="MIT OR Apache-2.0"
+categories=["command-line-utilities"]
+keywords=["latin","dictionary"]
 
 [dependencies]
 anyhow = "1.0.100"
