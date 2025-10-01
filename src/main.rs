@@ -212,6 +212,7 @@ pub struct WRecordMatch {
 
 #[derive(ValueEnum, Clone, Copy, Serialize, Deserialize, Debug)]
 pub enum WPartOfSpeech {
+    VPAR,
     CONJ,
     N,
     X,
@@ -397,6 +398,7 @@ pub enum WLetterCode {
 impl fmt::Display for WPartOfSpeech {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let text = match self {
+            WPartOfSpeech::VPAR => "verb participle",
             WPartOfSpeech::CONJ => "conjunction",
             WPartOfSpeech::N => "noun",
             WPartOfSpeech::X => "indeclinable",
