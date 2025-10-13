@@ -212,6 +212,7 @@ pub struct WRecordMatch {
 
 #[derive(ValueEnum, Clone, Copy, Serialize, Deserialize, Debug)]
 pub enum WPartOfSpeech {
+    PREP,
     VPAR,
     CONJ,
     N,
@@ -398,6 +399,7 @@ pub enum WLetterCode {
 impl fmt::Display for WPartOfSpeech {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let text = match self {
+            WPartOfSpeech::PREP => "preposition",
             WPartOfSpeech::VPAR => "verb participle",
             WPartOfSpeech::CONJ => "conjunction",
             WPartOfSpeech::N => "noun",
@@ -747,10 +749,17 @@ where
             .and_then(|v| u8::try_from(v).ok())
             .map(Some)
             .ok_or_else(|| D::Error::custom("expected u8-compatible number")),
-        Some(Value::String(s)) => s
-            .parse::<u8>()
-            .map(Some)
-            .map_err(|_| D::Error::custom("expected u8-compatible string")),
+        Some(Value::String(s)) => {
+            let trimmed = s.trim();
+            if trimmed.eq_ignore_ascii_case("x") {
+                Ok(None)
+            } else {
+                trimmed
+                    .parse::<u8>()
+                    .map(Some)
+                    .map_err(|_| D::Error::custom("expected u8-compatible string"))
+            }
+        }
         Some(other) => Err(D::Error::custom(format!(
             "unexpected type for numeric field: {:?}",
             other
