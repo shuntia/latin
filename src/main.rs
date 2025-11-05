@@ -86,10 +86,10 @@ async fn main() {
 
     let search_result_parsed: SearchResult = match args.source {
         LookupType::LIS => SearchResult::Lis(serde_json::from_str(&search_result).unwrap_or_else(|err|
-            panic!("Received malformed response(???)\nPlease take the logs and report to the devs.\n content: {}\nerror: {}",&search_result,err),
+            panic!("Received malformed response(???)\nPlease take the logs and report to the devs.\n content: {:#?}\nerror: {}",&search_result,err),
         )),
         LookupType::Whitakers => SearchResult::W(serde_json::from_str(&search_result).unwrap_or_else(|err|
-            panic!("Received malformed response(???)\nPlease take the logs and report to the devs.\n content: {}\nerror: {}",&search_result,err),
+            panic!("Received malformed response(???)\nPlease take the logs and report to the devs.\n content: {:#?}\nerror: {}",&search_result,err),
         )),
     };
     println!("Search result:");
