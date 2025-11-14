@@ -1,6 +1,6 @@
 [package]
 name = "ldict"
-version = "1.0.3"
+version = "1.0.4"
 edition = "2021"
 authors = ["shuntia <shuntia@shuntia.net>"]
 description="A command line latin dictionary."

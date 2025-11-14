@@ -570,10 +570,11 @@ impl fmt::Display for LisTranslations {
         if !en.is_empty() {
             parts.push(format!("en: {}", en));
         }
+        /*
         let de = self.de.trim();
         if !de.is_empty() {
             parts.push(format!("de: {}", de));
-        }
+        }*/
 
         if parts.is_empty() {
             f.write_str("—")
@@ -591,7 +592,7 @@ impl fmt::Display for LisSearchResult {
             lines.push(format!("Full entry: {}", self.full_name));
         }
         lines.push(format!("Gloss: {}", self.translations_unstructured));
-        lines.push(format!("Link: {}", self.url));
+        //lines.push(format!("Link: {}", self.url));
         f.write_str(&lines.join("\n"))
     }
 }
