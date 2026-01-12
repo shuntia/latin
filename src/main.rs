@@ -95,12 +95,18 @@ async fn main() {
     println!("Search result:");
     match search_result_parsed {
         SearchResult::Lis(res) => {
-            for i in res {
+            for (idx, i) in res.iter().enumerate() {
+                if idx > 0 {
+                    println!();
+                }
                 println!("{}", i);
             }
         }
         SearchResult::W(res) => {
-            for i in res {
+            for (idx, i) in res.iter().enumerate() {
+                if idx > 0 {
+                    println!();
+                }
                 println!("{}", i);
             }
         }
@@ -220,6 +226,10 @@ pub enum WPartOfSpeech {
     V,
     ADJ,
     ADV,
+    PACK,
+    TACKON,
+    #[serde(other)]
+    Other,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
@@ -407,6 +417,9 @@ impl fmt::Display for WPartOfSpeech {
             WPartOfSpeech::V => "verb",
             WPartOfSpeech::ADJ => "adjective",
             WPartOfSpeech::ADV => "adverb",
+            WPartOfSpeech::PACK => "packon",
+            WPartOfSpeech::TACKON => "tackon",
+            WPartOfSpeech::Other => "other",
         };
         f.write_str(text)
     }
@@ -700,13 +713,6 @@ impl fmt::Display for WRecordMatch {
 impl fmt::Display for WSearchResult {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut sections = Vec::new();
-
-        if let Some(query) = &self.search_query {
-            let trimmed = query.trim();
-            if !trimmed.is_empty() {
-                sections.push(format!("Query: {}", trimmed));
-            }
-        }
 
         if !self.root_lines.is_empty() {
             sections.push("Roots:".to_string());
